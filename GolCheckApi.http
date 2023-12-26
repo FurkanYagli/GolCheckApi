@@ -1,0 +1,6 @@
+@GolCheckApi_HostAddress = http://localhost:5150
+
+GET {{GolCheckApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
