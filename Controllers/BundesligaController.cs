@@ -2,6 +2,8 @@
 using GolCheckApi.Models;
 using GolCheckApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Metrics;
+using ZstdSharp.Unsafe;
 
 namespace GolCheckApi.Controllers
 {
@@ -10,17 +12,29 @@ namespace GolCheckApi.Controllers
     public class BundesligaController : ControllerBase
     {
         private readonly BundesligaService _BundesligaService;
+        //Repository Tasarım Deseni BundesligaService veritabanı
+        //gibi bir veri kaynağıyla etkileşimde bulunmak için tasarlanmıştır. Bu, Repository Tasarım Deseni ile uyumludur
 
 
-
+        //Dependency Injection - DI
+        //BundesligaController sınıfının constructor'ında BundesligaService bağımlılığı enjekte ediliyor.
+        //Bu, ASP.NET Core'daki bir tasarım deseni olan bağımlılık enjeksiyonunu kullanmanın bir örneğidir.
         public BundesligaController(BundesligaService bundesligaService)
         {
             _BundesligaService = bundesligaService;
         }
 
+
+
+        //DTO (Data Transfer Object) Tasarım Deseni:
+        //LigParametre sınıfı, API tarafından döndürülen veriyi şekillendirmek için bir Veri Transfer Objesi olarak kullanılır.
+        //Bu, API tarafından açığa çıkarılan verinin şeklini kontrol etmek için yaygın olarak kullanılan bir uygulamadır.       
         [HttpGet]
         public async Task<ActionResult<List<LigParametre>>> TakimTumunuGetir()
         {
+            //Null Object Tasarım Deseni:
+            //TakimTumunuGetir(Tüm Takımları Getir) metodu içinde, null veya boş liste kontrolü yapılır ve uygun durum koduyla yanıt verilir.
+            //Bu, takım bulunamadığında NotFound() yanıtının döndürülmesine yardımcı olur.
             var teams = await _BundesligaService.GetAsync();
 
             if (teams == null || teams.Count == 0)
@@ -41,7 +55,9 @@ namespace GolCheckApi.Controllers
             }
         }
 
-
+        //RESTful API Tasarımı:
+        //Kontrolcü metotları(HttpGet, HttpPost, HttpPut, HttpDelete), standart HTTP metotlarına ve
+        //RESTful tasarım prensiplerine uygun olarak kullanılmıştır.Bu, API'nin tahmin edilebilir ve anlaşılır olmasını sağlar.
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Bundesliga>> SeciliGetir(string id)
         {
@@ -61,6 +77,12 @@ namespace GolCheckApi.Controllers
                 return Ok(ligParametre);
             }
         }
+
+
+        //Post-Redirect-Get (PRG) Tasarım Deseni:
+        //TakimEkle(Takım Ekle) metodu, CreatedAtAction kullanarak 201 Oluşturuldu durumunu ve yeni oluşturulan kaynağın URL'sini döndürerek çalışır.
+        //Bu, form gönderimlerinin tekrarlanmasını önlemeye yardımcı olan Post-Redirect-Get tasarım deseni ile uyumludur.
+
         [HttpPost]
         public async Task<IActionResult> TakimEkle(Bundesliga newTeam)
         {
@@ -77,6 +99,9 @@ namespace GolCheckApi.Controllers
             if (takim is null)
             {
                 return NotFound();
+                //ActionResult Tasarım Deseni:
+                //Kontrolcü metotları, HTTP yanıtlarını esnek ve tutarlı bir şekilde işlemek için ActionResult türlerini döndürür.
+                //Örneğin, NotFound() 404 durum kodunu döndürmek için kullanılır.
             }
 
             updatedTeam.Id = takim.Id;

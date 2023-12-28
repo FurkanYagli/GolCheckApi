@@ -5,37 +5,37 @@ using MongoDB.Driver;
 
 namespace GolCheckApi.Services
 {
-    public class LaLigaPlayerService
+    public class LaligaPlayerService
     {
-        private readonly IMongoCollection<LaLigaPalyer> _PlayerCollection;
+        private readonly IMongoCollection<LaligaOyuncular> _Collection;
 
-        public LaLigaPlayerService(
-            IOptions<LaLigaPlayerDatabaseSettings> LaPlayerDatabaseSettings)
+        public LaligaPlayerService(
+            IOptions<LaligaPlDatabaseSettings> LaPlDatabaseSettings)
         {
             var mongoClient = new MongoClient(
-                LaPlayerDatabaseSettings.Value.LaPlConnectionString);
+                LaPlDatabaseSettings.Value.LaPlConnectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(
-                LaPlayerDatabaseSettings.Value.LaPlDatabaseName);
+                LaPlDatabaseSettings.Value.LaPlDatabaseName);
 
-            _PlayerCollection = mongoDatabase.GetCollection<LaLigaPalyer>(
-                LaPlayerDatabaseSettings.Value.LaPlCollectionName);
+            _Collection = mongoDatabase.GetCollection<LaligaOyuncular>(
+                LaPlDatabaseSettings.Value.LaPlCollectionName);
         }
 
-        public async Task<List<LaLigaPalyer>> GetAsync() =>
-            await _PlayerCollection.Find(_ => true).ToListAsync();
+        public async Task<List<LaligaOyuncular>> GetAsync() =>
+            await _Collection.Find(_ => true).ToListAsync();
 
-        public async Task<LaLigaPalyer?> GetAsync(string id) =>
-            await _PlayerCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<LaligaOyuncular?> GetAsync(string id) =>
+            await _Collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task CreateAsync(LaLigaPalyer newPlayer) =>
-            await _PlayerCollection.InsertOneAsync(newPlayer);
+        public async Task CreateAsync(LaligaOyuncular newTeam) =>
+            await _Collection.InsertOneAsync(newTeam);
 
-        public async Task UpdateAsync(string id, LaLigaPalyer updatedPlayer) =>
-            await _PlayerCollection.ReplaceOneAsync(x => x.Id == id, updatedPlayer);
+        public async Task UpdateAsync(string id, LaligaOyuncular updatedTeam) =>
+            await _Collection.ReplaceOneAsync(x => x.Id == id, updatedTeam);
 
         public async Task RemoveAsync(string id) =>
-            await _PlayerCollection.DeleteOneAsync(x => x.Id == id);
+            await _Collection.DeleteOneAsync(x => x.Id == id);
     }
 }
 

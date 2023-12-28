@@ -9,9 +9,6 @@ builder.Services.Configure<PrePlayerDatabaseSettings>(
 builder.Services.Configure<FrLigueDatabaseSettings>(
     builder.Configuration.GetSection("FrLigueDatabase"));
 
-builder.Services.Configure<LaLigaPlayerDatabaseSettings>(
-    builder.Configuration.GetSection("LaLigaPlayerDatabase"));
-
 builder.Services.Configure<SerieADatabaseSettings>(
     builder.Configuration.GetSection("ÝtalyaSerieADatabase"));
 
@@ -24,13 +21,16 @@ builder.Services.Configure<PremierLigDatabaseSettings>(
 builder.Services.Configure<IspanyaDatabaseSettings>(
     builder.Configuration.GetSection("ÝspanyaLaLigaDatabase"));
 
+builder.Services.Configure<LaligaPlDatabaseSettings>(
+    builder.Configuration.GetSection("ÝspanyaLaLigaOyuncuDatabase"));
+
 builder.Services.AddSingleton<FrLigueService>();
 builder.Services.AddSingleton<PrePlayerService>();
-builder.Services.AddSingleton<LaLigaPlayerService>();
 builder.Services.AddSingleton<SerieAService>();
 builder.Services.AddSingleton<BundesligaService>();
 builder.Services.AddSingleton<PreLigService>();
 builder.Services.AddSingleton<IspanyaService>();
+builder.Services.AddSingleton<LaligaPlayerService>();
 
 
 // Add services to the container.
