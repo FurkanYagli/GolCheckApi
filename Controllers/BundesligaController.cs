@@ -17,6 +17,8 @@ namespace GolCheckApi.Controllers
 
 
         //Dependency Injection - DI
+        //bağımlılıkların (dependencies) sınıfların dışarıdan sağlanmasını ve
+        //bu bağımlılıkların sınıf içine enjekte edilmesini sağlar. 
         //BundesligaController sınıfının constructor'ında BundesligaService bağımlılığı enjekte ediliyor.
         //Bu, ASP.NET Core'daki bir tasarım deseni olan bağımlılık enjeksiyonunu kullanmanın bir örneğidir.
         public BundesligaController(BundesligaService bundesligaService)
@@ -32,9 +34,10 @@ namespace GolCheckApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<LigParametre>>> TakimTumunuGetir()
         {
-            //Null Object Tasarım Deseni:
-            //TakimTumunuGetir(Tüm Takımları Getir) metodu içinde, null veya boş liste kontrolü yapılır ve uygun durum koduyla yanıt verilir.
-            //Bu, takım bulunamadığında NotFound() yanıtının döndürülmesine yardımcı olur.
+            /*Null Object Tasarım Deseni:
+            TakimTumunuGetir(Tüm Takımları Getir) metodu içinde, null veya boş liste kontrolü yapılır ve
+            uygun durum koduyla yanıt verilir.
+            Bu, takım bulunamadığında NotFound() yanıtının döndürülmesine yardımcı olur.*/
             var teams = await _BundesligaService.GetAsync();
 
             if (teams == null || teams.Count == 0)
@@ -55,9 +58,7 @@ namespace GolCheckApi.Controllers
             }
         }
 
-        //RESTful API Tasarımı:
-        //Kontrolcü metotları(HttpGet, HttpPost, HttpPut, HttpDelete), standart HTTP metotlarına ve
-        //RESTful tasarım prensiplerine uygun olarak kullanılmıştır.Bu, API'nin tahmin edilebilir ve anlaşılır olmasını sağlar.
+
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Bundesliga>> SeciliGetir(string id)
         {
@@ -80,9 +81,11 @@ namespace GolCheckApi.Controllers
 
 
         //Post-Redirect-Get (PRG) Tasarım Deseni:
-        //TakimEkle(Takım Ekle) metodu, CreatedAtAction kullanarak 201 Oluşturuldu durumunu ve yeni oluşturulan kaynağın URL'sini döndürerek çalışır.
+        //TakimEkle(Takım Ekle) metodu, CreatedAtAction kullanarak 201 Oluşturuldu durumunu
+        //ve yeni oluşturulan kaynağın URL'sini döndürerek çalışır.
         //Bu, form gönderimlerinin tekrarlanmasını önlemeye yardımcı olan Post-Redirect-Get tasarım deseni ile uyumludur.
-
+        //Bu desen, kullanıcıların tarayıcıda "Yeniden Yükle" yapmalarından kaynaklanan
+        //tekrarlanan form gönderimleri ve ilgili sorunları önlemeye yardımcı olur.
         [HttpPost]
         public async Task<IActionResult> TakimEkle(Bundesliga newTeam)
         {
@@ -100,6 +103,8 @@ namespace GolCheckApi.Controllers
             {
                 return NotFound();
                 //ActionResult Tasarım Deseni:
+                //MVC mimarisinde, bir kullanıcının bir web sayfasına veya bir servise
+                //yaptığı istekler sonucunda uygulama tarafından döndürülen sonuçları ifade eder.
                 //Kontrolcü metotları, HTTP yanıtlarını esnek ve tutarlı bir şekilde işlemek için ActionResult türlerini döndürür.
                 //Örneğin, NotFound() 404 durum kodunu döndürmek için kullanılır.
             }
